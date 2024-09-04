@@ -1,6 +1,6 @@
 'use client';
-import { usePathname } from "@/node_modules/next/navigation";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import classes from './nav-link.module.css';
 
 export default function NavLink({ href, children }) {
