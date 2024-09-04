@@ -2,12 +2,13 @@
 
 import { redirect } from "node_modules/next/navigation";
 import { saveMeal } from "./meals";
+import { revalidatePath } from "@/node_modules/next/cache";
 
 function isInvalidText(text) {
   return !text || text.trim() === '';
 }
 
-export async function shareMeal(formData) {
+export async function shareMeal(prevState, formData) {
   const meal = {
     title: formData.get("title"),
     summary: formData.get("summary"),
@@ -31,6 +32,10 @@ export async function shareMeal(formData) {
       message: 'Invalid input'
     };
    }
-    await saveMeal(meal);
+
+  await saveMeal(meal);
+  // 1. path to be revalidated
+  // 2. layout get revalidated which includes all nested pages
+  revalidatePath('/meals', 'layout');
   redirect("/meals");
 }
