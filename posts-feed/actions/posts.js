@@ -2,8 +2,9 @@
 // https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns#keeping-server-only-code-out-of-the-client-environment
 
 import { redirect } from 'next/navigation';
-import { storePost } from '@/lib/posts';
+import { storePost, updatePostLikeStatus } from '@/lib/posts';
 import { uploadImage } from '@/lib/cloudinary';
+import { revalidatePath } from 'next/cache';
 
 export async function createPost(prevState, formData) {
   const title = formData.get('title');
@@ -42,5 +43,11 @@ export async function createPost(prevState, formData) {
     userId: 1
   });
 
+  revalidatePath('/', 'layout');
   redirect('/feed');
+}
+
+export async function togglePostLikeStatus(postId) {
+  await updatePostLikeStatus(postId, 2);
+  revalidatePath('/', 'layout');
 }
